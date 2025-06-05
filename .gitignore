@@ -5,3 +5,4 @@ composer.lock
 /.phpunit.cache
 /testResult
 launch.json
+.idea
