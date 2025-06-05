@@ -1,6 +1,7 @@
 {
-    "name": "dvicklund/inventory",
-    "description": "Inventory management using Laravel 9|10|11",
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "chrisidakwo/laravel-inventory",
+    "description": "Inventory management for Laravel",
     "keywords": ["laravel", "inventory", "inventory-management"],
     "authors": [
         {
@@ -10,6 +11,14 @@
         {
             "name": "David Vicklund",
             "email": "david@vicklund.com"
+        },
+        {
+            "name": "Scott St. John",
+            "homepage": "https://github.com/tr3mulant"
+        },
+        {
+            "name": "Chris Idakwo",
+            "email": "chris.idakwo@gmail.com"
         }
     ],
     "license": "MIT",
