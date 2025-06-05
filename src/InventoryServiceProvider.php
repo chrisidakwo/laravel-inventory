@@ -25,15 +25,15 @@ class InventoryServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public static $packageConfigSeparator = '.';
+    public static string $packageConfigSeparator = '.';
 
     /**
      * The laravel version number. This is
-     * used for the install commands.
+     * used for the 'install' commands.
      *
      * @var int
      */
-    public static $laravelVersion = 9;
+    public static int $laravelVersion = 9;
 
     /**
      * Indicates if loading of the provider is deferred.
@@ -64,12 +64,12 @@ class InventoryServiceProvider extends ServiceProvider
             __DIR__.'/config/config.php' => config_path('inventory.php'),
         ], 'config');
 
-        /*
-            * Assign the migrations as publishable, and tag it as 'migrations'
-            */
-        // $this->publishes([
-        //     __DIR__.'/migrations/' => base_path('database/migrations'),
-        // ], 'migrations');
+        /**
+         * Assign the migrations as publishable, and tag it as 'migrations'
+         */
+//         $this->publishes([
+//             __DIR__.'/migrations/' => base_path('database/migrations'),
+//         ], 'migrations');
 
         /**
          * Load migrations
@@ -80,10 +80,10 @@ class InventoryServiceProvider extends ServiceProvider
     /**
      * Register the service provider.
      */
-    public function register()
+    public function register(): void
     {
         /*
-         * Bind the install command
+         * Bind the 'install' command
          */
         $this->app->bind('inventory:install', function () {
             return new Commands\InstallCommand();
@@ -98,6 +98,11 @@ class InventoryServiceProvider extends ServiceProvider
 
         /*
          * Bind the run migrations command
+         *
+         *
+         */
+        /**
+         * @deprecated Remove this command. It's not needed.
          */
         $this->app->bind('inventory:run-migrations', function () {
             return new Commands\RunMigrationsCommand();

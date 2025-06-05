@@ -28,10 +28,10 @@ class RunMigrationsCommand extends Command
     /**
      * Execute the command.
      */
-    public function handle()
+    public function handle(): void
     {
         $this->call('migrate', [
-            '--path' => 'vendor/dvicklund/inventory/src/migrations',
+            '--path' => 'vendor/chrisidakwo/laravel-inventory/src/migrations',
         ]);
     }
 }
