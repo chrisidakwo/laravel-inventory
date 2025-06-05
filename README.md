@@ -1,17 +1,12 @@
-# Inventory
+# Laravel Inventory
 
-[![Travis CI](https://img.shields.io/travis/stevebauman/inventory/v1.7.5.svg?style=flat-square)](https://travis-ci.org/stevebauman/inventory)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/stevebauman/inventory.svg?style=flat-square)](https://scrutinizer-ci.com/g/stevebauman/inventory/?branch=master)
-[![SensioLabsInsight](https://img.shields.io/sensiolabs/i/69e0abf0-cd74-4d4d-b40c-e943c4a7eea9.svg?style=flat-square)](https://insight.sensiolabs.com/projects/69e0abf0-cd74-4d4d-b40c-e943c4a7eea9)
-[![Latest Stable Version](https://img.shields.io/packagist/v/stevebauman/inventory.svg?style=flat-square)](https://packagist.org/packages/stevebauman/inventory)
-[![Total Downloads](https://img.shields.io/packagist/dt/stevebauman/inventory.svg?style=flat-square)](https://packagist.org/packages/stevebauman/inventory)
-[![License](https://img.shields.io/packagist/l/stevebauman/inventory.svg?style=flat-square)](https://packagist.org/packages/stevebauman/inventory)
+[![Latest Stable Version](https://img.shields.io/packagist/v/chrisidakwo/laravel-inventory.svg?style=flat-square)](https://packagist.org/packages/chrisidakwo/laravel-inventory)
+[![Total Downloads](https://img.shields.io/packagist/dt/chrisidakwo/laravel-inventory.svg?style=flat-square)](https://packagist.org/packages/chrisidakwo/laravel-inventory)
+[![License](https://img.shields.io/packagist/l/chrisidakwo/laravel-inventory.svg?style=flat-square)](https://packagist.org/packages/chrisidakwo/laravel-inventory)
 
-This package has been taken over by @dvicklund.
+This package has been taken over by [@chrisidakwo](https://github.com/chrisidakwo/laravel-inventory).
 
 ## Index
-
-[![Join the chat at https://gitter.im/stevebauman/inventory](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/stevebauman/inventory?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 <ul>
     <li>
@@ -24,10 +19,7 @@ This package has been taken over by @dvicklund.
     <li>
         <a href="docs/INSTALLATION.md">Installation</a>
         <ul>
-            <li><a href="docs/INSTALLATION.md#installation-laravel-4">Laravel 4</a></li>
-            <li><a href="docs/INSTALLATION.md#installation-laravel-5">Laravel 5</a></li>
-            <li><a href="docs/INSTALLATION.md#installation-laravel-9">Laravel 9</a></li>
-            <li><a href="docs/INSTALLATION.md#installation-laravel-10">Laravel 10</a></li>
+            <li><a href="docs/INSTALLATION.md#installation-laravel-9">Laravel 9 and above</a></li>
             <li>
                 <a href="docs/INSTALLATION.md#customize-installation">Customize Installation</a>
                 <ul>

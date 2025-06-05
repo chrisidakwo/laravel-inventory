@@ -1,102 +1,32 @@
 ## Installation
 
-### Installation (Laravel 4)
+### Installation (Laravel 9 and above)
 
-Add inventory to your `composer.json` file:
+This package can only work in Laravel projects running Laravel v9 and above.
 
-    "stevebauman/inventory" : "1.6.*"
+For project running a lesser version, you can use the parent project: https://github.com/mauricecalhoun/inventory 
 
-Now perform a `composer update` on your project's source.
+#### Steps:
 
-Then insert the service provider in your `app/config/app.php` config file:
-
-    'Stevebauman\Inventory\InventoryServiceProvider'
-
-If you want to customize the database tables, you can publish the migration and run it yourself:
-
-    php artisan migrate:publish stevebauman/inventory
-
-And then run the migration:
-
-    php artisan migrate
-
-Otherwise you can run the install command:
-
-    php artisan inventory:install
-
-Be sure to publish the configuration if you'd like to customize inventory:
-
-    php artisan config:publish stevebauman/inventory
-
-### Installation (Laravel 5)
-
-Add inventory to your `composer.json` file:
-
-    "stevebauman/inventory" : "1.6.*"
-
-Now perform a `composer update` on your project's source.
-
-Then insert the service provider in your `config/app.php` config file:
-
-    'Stevebauman\Inventory\InventoryServiceProvider'
-
-Either publish the assets to customize the database tables using:
-
-    php artisan vendor:publish
-
-And then run the migrations:
-
-    php artisan migrate
-
-Or use the inventory install command:
-
-    php artisan inventory:install
-
-### Installation (Laravel 9)
-
-Add inventory to your `composer.json` file:
+1. Add inventory to your `composer.json` file:
 
     "stevebauman/inventory" : "v2.1.*"
 
-Now perform a `composer update` on your project's source.
+2. Now perform a `composer update` on your project's source.
 
-Then insert the service provider in your `config/app.php` config file:
-
-    'Stevebauman\Inventory\InventoryServiceProvider'
-
-Either publish the assets to customize the database tables using:
-
-    php artisan vendor:publish
-
-And then run the migrations:
-
-    php artisan migrate
-
-Or use the inventory install command:
-
-    php artisan inventory:install
-
-### Installation (Laravel 10)
-
-Add inventory to your `composer.json` file:
-
-    "stevebauman/inventory" : "^v2.3.4"
-
-Now perform a `composer update` on your project's source.
-
-Then insert the service provider in your `config/app.php` config file:
+3. Then insert the service provider in your `config/app.php` config file:
 
     'Stevebauman\Inventory\InventoryServiceProvider'
 
-Either publish the assets to customize the database tables using:
+4. Either publish the assets to customize the database tables using:
 
     php artisan vendor:publish
 
-And then run the migrations:
+5. And then run the migrations:
 
     php artisan migrate
 
-Or use the inventory install command:
+6. Or use the inventory install command:
 
     php artisan inventory:install
 
