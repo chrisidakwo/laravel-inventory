@@ -25,27 +25,27 @@ class InventoryServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public static $packageConfigSeparator = '.';
+    public static string $packageConfigSeparator = '.';
 
     /**
      * The laravel version number. This is
-     * used for the install commands.
+     * used for the 'install' commands.
      *
      * @var int
      */
-    public static $laravelVersion = 9;
+    public static int $laravelVersion = 9;
 
     /**
      * Indicates if loading of the provider is deferred.
      *
      * @var bool
      */
-    protected $defer = false;
+    protected bool $defer = false;
 
     /**
      * Boot the service provider.
      */
-    public function boot()
+    public function boot(): void
     {
         /*
             * Set the local inventory laravel version for easy checking
@@ -65,25 +65,25 @@ class InventoryServiceProvider extends ServiceProvider
         ], 'config');
 
         /*
-            * Assign the migrations as publishable, and tag it as 'migrations'
-            */
-        // $this->publishes([
-        //     __DIR__.'/migrations/' => base_path('database/migrations'),
-        // ], 'migrations');
+         * Assign the migrations as publishable, and tag it as 'migrations'
+         */
+         $this->publishes([
+             __DIR__.'/migrations/' => base_path('database/migrations'),
+         ], 'migrations');
 
         /**
          * Load migrations
          */
-        $this->loadMigrationsFrom(__DIR__.'/migrations');
+//        $this->loadMigrationsFrom(__DIR__.'/migrations');
     }
 
     /**
      * Register the service provider.
      */
-    public function register()
+    public function register(): void
     {
         /*
-         * Bind the install command
+         * Bind the 'install' command
          */
         $this->app->bind('inventory:install', function () {
             return new Commands\InstallCommand();
@@ -131,8 +131,8 @@ class InventoryServiceProvider extends ServiceProvider
      *
      * @return array
      */
-    public function provides()
+    public function provides(): array
     {
-        return ['inventory'];
+        return ['laravel-inventory'];
     }
 }
