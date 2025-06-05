@@ -90,12 +90,6 @@ you can simply use the built in models.
 - Laravel's Auth, Sentry or Sentinel if you need automatic accountability
 - A `users` database table
 
-Recommended:
-
-- [Stevebauman/Revision](http://www.github.com/stevebauman/revision) (For tracking Category and Location changes to stocks)
-
-If you need another Auth driver supported, please send a pull request or create an issue.
-
 ### Benefits
 
 If you're using the traits from this package to customize your install, that means you have complete flexibility over your own

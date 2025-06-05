@@ -5,20 +5,20 @@
     "keywords": ["laravel", "inventory", "inventory-management"],
     "authors": [
         {
-            "name": "Steve Bauman",
-            "email": "steven_bauman@outlook.com"
-        },
-        {
-            "name": "David Vicklund",
-            "email": "david@vicklund.com"
+            "name": "Chris Idakwo",
+            "email": "chris.idakwo@gmail.com"
         },
         {
             "name": "Scott St. John",
             "homepage": "https://github.com/tr3mulant"
         },
         {
-            "name": "Chris Idakwo",
-            "email": "chris.idakwo@gmail.com"
+            "name": "David Vicklund",
+            "email": "david@vicklund.com"
+        },
+        {
+            "name": "Steve Bauman",
+            "email": "steven_bauman@outlook.com"
         }
     ],
     "license": "MIT",
