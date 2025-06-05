@@ -224,10 +224,10 @@ trait InventoryTrait
     /**
      * Creates a stock record to the current inventory item.
      *
-     * @param float|int $quantity
+     * @param float|int|string $quantity
      * @param $location
      * @param string $reason
-     * @param float|int $cost
+     * @param float|int|string $cost
      * @param null $aisle
      * @param null $row
      * @param null $bin
@@ -238,7 +238,7 @@ trait InventoryTrait
      * @throws IsParentException
      * @throws StockAlreadyExistsException
      */
-    public function createStockOnLocation(float|int $quantity, $location, string $reason = '', float|int $cost = 0, $aisle = null, $row = null, $bin = null): false|InventoryStock
+    public function createStockOnLocation(float|int|string $quantity, $location, string $reason = '', float|int|string $cost = 0, $aisle = null, $row = null, $bin = null): false|InventoryStock
     {
         if (!$this->is_parent) {
 
@@ -348,7 +348,7 @@ trait InventoryTrait
     /**
      * Takes the specified amount ($quantity) of stock from specified stock location.
      *
-     * @param float|int $quantity
+     * @param float|int|string $quantity
      * @param $location
      * @param string $reason
      *
@@ -358,7 +358,7 @@ trait InventoryTrait
      * @throws StockNotFoundException
      * @throws NotEnoughStockException
      */
-    public function takeFromLocation(float|int $quantity, $location, string $reason = ''): bool|array|static
+    public function takeFromLocation(float|int|string $quantity, $location, string $reason = ''): bool|array|static
     {
         /*
          * If the specified location is an array, we must be taking from
@@ -380,7 +380,7 @@ trait InventoryTrait
     /**
      * Takes the specified amount ($quantity) of stock from the specified stock locations.
      *
-     * @param float|int $quantity
+     * @param float|int|string $quantity
      * @param array $locations
      * @param string $reason
      *
@@ -390,7 +390,7 @@ trait InventoryTrait
      * @throws NotEnoughStockException
      * @throws StockNotFoundException
      */
-    public function takeFromManyLocations(float|int $quantity, array $locations = [], string $reason = ''): array
+    public function takeFromManyLocations(float|int|string $quantity, array $locations = [], string $reason = ''): array
     {
         $stocks = [];
 
@@ -406,7 +406,7 @@ trait InventoryTrait
     /**
      * Alias for the `take` function.
      *
-     * @param float|int $quantity
+     * @param float|int|string $quantity
      * @param $location
      * @param string $reason
      *
@@ -416,7 +416,7 @@ trait InventoryTrait
      * @throws NotEnoughStockException
      * @throws StockNotFoundException
      */
-    public function removeFromLocation(float|int $quantity, $location, string $reason = ''): Inventory|bool|array|static
+    public function removeFromLocation(float|int|string $quantity, $location, string $reason = ''): Inventory|bool|array|static
     {
         return $this->takeFromLocation($quantity, $location, $reason);
     }
@@ -442,7 +442,7 @@ trait InventoryTrait
     /**
      * Puts the specified amount ($quantity) of stock into the specified stock location(s).
      *
-     * @param float|int $quantity
+     * @param float|int|string $quantity
      * @param $location
      * @param string $reason
      * @param int $cost
@@ -452,7 +452,7 @@ trait InventoryTrait
      * @throws InvalidQuantityException
      * @throws StockNotFoundException
      */
-    public function putToLocation(float|int $quantity, $location, string $reason = '', int $cost = 0): array|static|false
+    public function putToLocation(float|int|string $quantity, $location, string $reason = '', int $cost = 0): array|static|false
     {
         if (is_array($location)) {
             return $this->putToManyLocations($quantity, $location);
@@ -470,10 +470,10 @@ trait InventoryTrait
     /**
      * Puts the specified amount ($quantity) of stock into the specified stock locations.
      *
-     * @param float|int $quantity
+     * @param float|int|string $quantity
      * @param array $locations
      * @param string $reason
-     * @param float|int $cost
+     * @param float|int|string $cost
      *
      * @return array
      * @throws StockNotFoundException
@@ -481,7 +481,7 @@ trait InventoryTrait
      * @throws InvalidQuantityException
      *
      */
-    public function putToManyLocations(float|int $quantity, array $locations = [], string $reason = '', float|int $cost = 0): array
+    public function putToManyLocations(float|int|string $quantity, array $locations = [], string $reason = '', float|int|string $cost = 0): array
     {
         $stocks = [];
 
@@ -497,17 +497,17 @@ trait InventoryTrait
     /**
      * Alias for the `put` function.
      *
-     * @param float|int $quantity
+     * @param float|int|string $quantity
      * @param $location
      * @param string $reason
-     * @param float|int $cost
+     * @param float|int|string $cost
      *
      * @return array
      * @throws InvalidLocationException
      * @throws InvalidQuantityException
      * @throws StockNotFoundException
      */
-    public function addToLocation(float|int $quantity, $location, string $reason = '', float|int $cost = 0): array
+    public function addToLocation(float|int|string $quantity, $location, string $reason = '', float|int|string $cost = 0): array
     {
         return $this->putToLocation($quantity, $location, $reason, $cost);
     }
@@ -515,17 +515,17 @@ trait InventoryTrait
     /**
      * Alias for the `putToMany` function.
      *
-     * @param float|int $quantity
+     * @param float|int|string $quantity
      * @param array $locations
      * @param string $reason
-     * @param float|int $cost
+     * @param float|int|string $cost
      *
      * @return array
      * @throws InvalidLocationException
      * @throws InvalidQuantityException
      * @throws StockNotFoundException
      */
-    public function addToManyLocations(float|int $quantity, array $locations = [], string $reason = '', float|int $cost = 0): array
+    public function addToManyLocations(float|int|string $quantity, array $locations = [], string $reason = '', float|int|string $cost = 0): array
     {
         return $this->putToManyLocations($quantity, $locations, $reason, $cost);
     }

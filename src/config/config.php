@@ -80,16 +80,16 @@ return [
      * @var array
      */
     'models' => [
-        'category' => 'Stevebauman\Inventory\Models\Category',
-        'inventory' => 'Stevebauman\Inventory\Models\Inventory',
-        'inventory_sku' => 'Stevebauman\Inventory\Models\InventorySku',
-        'inventory_stock' => 'Stevebauman\Inventory\Models\InventoryStock',
-        'inventory_stock_movement' => 'Stevebauman\Inventory\Models\InventoryStockMovement',
-        'inventory_transaction' => 'Stevebauman\Inventory\Models\InventoryTransaction',
-        'inventory_transaction_history' => 'Stevebauman\Inventory\Models\InventoryTransactionHistory',
-        'location' => 'Stevebauman\Inventory\Models\Location',
-        'metric' => 'Stevebauman\Inventory\Models\Metric',
-        'supplier' => 'Stevebauman\Inventory\Models\Supplier',
+        'category' => '\Stevebauman\Inventory\Models\Category',
+        'inventory' => '\Stevebauman\Inventory\Models\Inventory',
+        'inventory_sku' => '\Stevebauman\Inventory\Models\InventorySku',
+        'inventory_stock' => '\Stevebauman\Inventory\Models\InventoryStock',
+        'inventory_stock_movement' => '\Stevebauman\Inventory\Models\InventoryStockMovement',
+        'inventory_transaction' => '\Stevebauman\Inventory\Models\InventoryTransaction',
+        'inventory_transaction_history' => '\Stevebauman\Inventory\Models\InventoryTransactionHistory',
+        'location' => '\Stevebauman\Inventory\Models\Location',
+        'metric' => '\Stevebauman\Inventory\Models\Metric',
+        'supplier' => '\Stevebauman\Inventory\Models\Supplier',
     ],
 
 ];

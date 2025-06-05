@@ -166,15 +166,15 @@ trait InventoryStockTrait
      * depending on the quantity entered if stock is being taken
      * or added.
      *
-     * @param float|int $quantity
+     * @param float|int|string $quantity
      * @param string $reason
-     * @param float|int $cost
+     * @param float|int|string $cost
      *
      * @return $this
      * @throws InvalidQuantityException
      * @throws NotEnoughStockException
      */
-    public function updateQuantity(float|int $quantity, string $reason = '', float|int $cost = 0): static
+    public function updateQuantity(float|int|string $quantity, string $reason = '', float|int|string $cost = 0): static
     {
         if ($this->isValidQuantity($quantity)) {
             return $this->processUpdateQuantityOperation($quantity, $reason, $cost);
@@ -186,7 +186,7 @@ trait InventoryStockTrait
     /**
      * Removes the specified quantity from the current stock.
      *
-     * @param float|int $quantity
+     * @param float|int|string $quantity
      * @param string $reason
      * @param int $cost
      *
@@ -194,7 +194,7 @@ trait InventoryStockTrait
      * @throws InvalidQuantityException
      * @throws NotEnoughStockException
      */
-    public function remove(float|int $quantity, string $reason = '', int $cost = 0): bool|static
+    public function remove(float|int|string $quantity, string $reason = '', int $cost = 0): bool|static
     {
         return $this->take($quantity, $reason, $cost);
     }
@@ -202,15 +202,15 @@ trait InventoryStockTrait
     /**
      * Processes a 'take' operation on the current stock.
      *
-     * @param float|int $quantity
+     * @param float|int|string $quantity
      * @param string $reason
-     * @param float|int $cost
+     * @param float|int|string $cost
      *
      * @return static|bool
      * @throws InvalidQuantityException
      * @throws NotEnoughStockException
      */
-    public function take(float|int $quantity, string $reason = '', float|int $cost = 0): bool|static
+    public function take(float|int|string $quantity, string $reason = '', float|int|string $cost = 0): bool|static
     {
         if ($this->isValidQuantity($quantity) && $this->hasEnoughStock($quantity)) {
             return $this->processTakeOperation($quantity, $reason, $cost);
@@ -222,14 +222,14 @@ trait InventoryStockTrait
     /**
      * Alias for put function.
      *
-     * @param float|int $quantity
+     * @param float|int|string $quantity
      * @param string $reason
-     * @param float|int $cost
+     * @param float|int|string $cost
      *
      * @return $this
      * @throws InvalidQuantityException
      */
-    public function add(float|int $quantity, string $reason = '', float|int $cost = 0): static
+    public function add(float|int|string $quantity, string $reason = '', float|int|string $cost = 0): static
     {
         return $this->put($quantity, $reason, $cost);
     }
@@ -237,15 +237,15 @@ trait InventoryStockTrait
     /**
      * Processes a 'put' operation on the current stock.
      *
-     * @param float|int $quantity
+     * @param float|int|string $quantity
      * @param string $reason
-     * @param float|int $cost
+     * @param float|int|string $cost
      *
      * @return $this
      * @throws InvalidQuantityException
      *
      */
-    public function put(float|int $quantity, string $reason = '', float|int $cost = 0): static
+    public function put(float|int|string $quantity, string $reason = '', float|int|string $cost = 0): static
     {
         if ($this->isValidQuantity($quantity)) {
             return $this->processPutOperation($quantity, $reason, $cost);
@@ -315,13 +315,13 @@ trait InventoryStockTrait
      * Returns true if there is enough stock for the specified quantity being taken.
      * Throws NotEnoughStockException otherwise.
      *
-     * @param float|int $quantity
+     * @param float|int|string $quantity
      *
      * @return bool
      * @throws NotEnoughStockException
      *
      */
-    public function hasEnoughStock(float|int $quantity = 0): bool
+    public function hasEnoughStock(float|int|string $quantity = 0): bool
     {
         /*
          * Using double equals for validation of complete value only, not variable type. For example:
@@ -419,15 +419,15 @@ trait InventoryStockTrait
     /**
      * Processes a quantity update operation.
      *
-     * @param float|int $quantity
+     * @param float|int|string $quantity
      * @param string $reason
-     * @param float|int $cost
+     * @param float|int|string $cost
      *
      * @return $this
      * @throws InvalidQuantityException
      * @throws NotEnoughStockException
      */
-    private function processUpdateQuantityOperation(float|int $quantity, string $reason = '', float|int $cost = 0): static
+    private function processUpdateQuantityOperation(float|int|string $quantity, string $reason = '', float|int|string $cost = 0): static
     {
         if ($quantity > $this->quantity) {
             $putting = $quantity - $this->quantity;
@@ -496,11 +496,11 @@ trait InventoryStockTrait
      *
      * @param float|int|string $putting
      * @param string $reason
-     * @param float|int $cost
+     * @param float|int|string $cost
      *
      * @return $this|bool
      */
-    private function processPutOperation(float|int|string $putting, string $reason = '', float|int $cost = 0)
+    private function processPutOperation(float|int|string $putting, string $reason = '', float|int|string $cost = 0)
     {
         $before = $this->quantity;
 
@@ -654,11 +654,11 @@ trait InventoryStockTrait
      * @param float|int $before
      * @param float|int $after
      * @param string $reason
-     * @param float|int $cost
+     * @param float|int|string $cost
      *
      * @return InventoryStockMovement
      */
-    private function generateStockMovement(float|int $before, float|int $after, string $reason = '', float|int $cost = 0): InventoryStockMovement
+    private function generateStockMovement(float|int $before, float|int $after, string $reason = '', float|int|string $cost = 0): InventoryStockMovement
     {
         $insert = [
             'stock_id' => $this->getKey(),
@@ -674,9 +674,9 @@ trait InventoryStockTrait
     /**
      * Sets the cost attribute.
      *
-     * @param float|int $cost
+     * @param float|int|string $cost
      */
-    private function setCost(float|int $cost = 0): void
+    private function setCost(float|int|string $cost = 0): void
     {
         $this->cost = $cost;
     }

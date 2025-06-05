@@ -3,9 +3,7 @@
 namespace Stevebauman\Inventory\Tests;
 
 use Illuminate\Database\Capsule\Manager as DB;
-// use Illuminate\Support\Facades\Lang;
-// use Illuminate\Support\Facades\Event;
-// use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Config;
 use Orchestra\Testbench\TestCase;
 use Stevebauman\Inventory\Models\Inventory;
@@ -15,20 +13,15 @@ use Stevebauman\Inventory\Models\Metric;
 use Stevebauman\Inventory\Models\Category;
 use Stevebauman\Inventory\Models\Supplier;
 use Stevebauman\Inventory\InventoryServiceProvider;
-use Illuminate\Database\Eloquent\Model as Eloquent;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Faker\Factory;
 
 class FunctionalTestCase extends TestCase
 {
-    // use RefreshDatabase;
-    // use DatabaseTransactions;
 
     protected static $db = null;
     protected static $connection = null;
 
-    protected static $migrated = false;
+    protected static bool $migrated = false;
     
     public static $faker = null;
 
@@ -64,18 +57,18 @@ class FunctionalTestCase extends TestCase
     /**
      * Get package providers.
      *
-     * @param  \Illuminate\Foundation\Application  $app
+     * @param  Application  $app
      *
      * @return array
      */
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return [
             'Stevebauman\Inventory\InventoryServiceProvider',
         ];
     }
 
-    protected function getEnvironmentSetUp($app)
+    protected function getEnvironmentSetUp($app): void
     {
         // Setup default database to use sqlite :memory:
         $app['config']->set('database.default', 'testbench');
@@ -137,7 +130,7 @@ class FunctionalTestCase extends TestCase
         }
     }
 
-    private static function migrateTables()
+    private static function migrateTables(): void
     {
         if (!DB::schema()->hasTable('users')) {
             DB::schema()->create('users', function ($table) {

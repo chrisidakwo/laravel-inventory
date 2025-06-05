@@ -2,6 +2,8 @@
 
 namespace Stevebauman\Inventory\Tests;
 
+use Stevebauman\Inventory\Exceptions\InvalidSupplierException;
+use Stevebauman\Inventory\Exceptions\IsParentException;
 use Stevebauman\Inventory\Models\Supplier;
 use Stevebauman\Inventory\Models\Inventory;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +19,8 @@ class InventorySupplierTest extends FunctionalTestCase
      * Test inventory supplier attach
      *
      * @return void
+     * @throws InvalidSupplierException
+     * @throws IsParentException
      */
     public function testInventorySupplierAttach()
     {
