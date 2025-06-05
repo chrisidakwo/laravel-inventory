@@ -587,7 +587,7 @@ class FunctionalTestCase extends TestCase
     }
 
     /**
-     * @return InventoryStockTransaction
+     * @return \Stevebauman\Inventory\Models\InventoryTransaction
      */
     protected function newTransaction()
     {
