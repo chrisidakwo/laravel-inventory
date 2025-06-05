@@ -10,7 +10,7 @@ For project running a lesser version, you can use the parent project: https://gi
 
 1. Add inventory to your `composer.json` file:
 
-    "stevebauman/inventory" : "v2.1.*"
+    "chrisidakwo/laravel-inventory" : "dev-master"
 
 2. Now perform a `composer update` on your project's source.
 
