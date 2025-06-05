@@ -16,12 +16,12 @@ trait LocationTrait
      * Returns a location depending on the specified argument. If an object is supplied, it is checked if it
      * is an instance of the model Location, if a numeric value is entered, it is retrieved by its ID.
      *
-     * @param Location|int $location
+     * @param Location|int|string $location
      *
      * @return Location|null
      * @throws InvalidLocationException
      */
-    public function getLocation(Location|int $location): Location|null
+    public function getLocation(Location|int|string $location): Location|null
     {
         if ($this->isLocation($location)) {
             return $location;

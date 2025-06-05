@@ -73,17 +73,7 @@ class Inventory extends BaseModel
     public function suppliers(): BelongsToMany
     {
         return $this->belongsToMany(config('inventory.models.supplier'), 'inventory_suppliers', 'inventory_id')
-            ->withTimestamps();
-    }
-
-    /**
-     * The belongsToMany supplier SKU relationship.
-     * 
-     * @return HasMany
-     */
-    public function supplierSKUs(): HasMany
-    {
-        return $this->hasMany(config('inventory.models.supplier'), 'inventory_suppliers', 'inventory_id');
+            ->withTimestamps()->withPivot(['supplier_sku']);
     }
 
     /**

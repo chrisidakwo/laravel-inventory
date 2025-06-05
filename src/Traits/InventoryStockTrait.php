@@ -257,12 +257,12 @@ trait InventoryStockTrait
     /**
      * Moves a stock to the specified location.
      *
-     * @param Location|int $location
+     * @param Location|int|string $location
      *
-     * @return bool
+     * @return bool|static
      * @throws InvalidLocationException
      */
-    public function moveTo(Location|int $location): bool
+    public function moveTo(Location|int|string $location): bool|static
     {
         $location = $this->getLocation($location);
 
@@ -276,7 +276,7 @@ trait InventoryStockTrait
      * @param InventoryStockMovement|int|null $movement
      * @param bool $recursive
      *
-     * @return false|array|InventoryStockTrait
+     * @return false|array|static
      * @throws InvalidMovementException
      */
     public function rollback(InventoryStockMovement|int|null $movement = null, bool $recursive = false): false|array|static
@@ -300,11 +300,11 @@ trait InventoryStockTrait
      * @param mixed $movement
      * @param bool $recursive
      *
-     * @return $this|bool
+     * @return bool|array|static
      *@throws InvalidMovementException
      *
      */
-    public function rollbackMovement(InventoryStockMovement|int $movement, bool $recursive = false): bool|static
+    public function rollbackMovement(InventoryStockMovement|int|string $movement, bool $recursive = false): bool|array|static
     {
         $movement = $this->getMovement($movement);
 
@@ -364,7 +364,7 @@ trait InventoryStockTrait
      * @return InventoryStockMovement|null
      * @throws InvalidMovementException
      */
-    public function getMovement(InventoryStockMovement|int $movement): InventoryStockMovement|null
+    public function getMovement(InventoryStockMovement|int|string $movement): InventoryStockMovement|null
     {
         if ($this->isModel($movement)) {
             return $movement;
@@ -641,7 +641,7 @@ trait InventoryStockTrait
 
         if ($movements->count() > 0) {
             foreach ($movements as $movement) {
-                $rollbacks = $this->processRollbackOperation($movement);
+                $rollbacks[] = $this->processRollbackOperation($movement);
             }
         }
 

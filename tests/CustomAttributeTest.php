@@ -420,7 +420,7 @@ class CustomAttributeTest extends FunctionalTestCase
         $attr = $item->addCustomAttribute('string', 'Even newer than that');
         $item->setCustomAttribute($attr, 'value again');
 
-        $q = CustomAttributeValue::with('inventories')->where('custom_attribute_values.custom_attribute_id', $attr->id);
+        $q = CustomAttributeValue::with('inventory')->where('custom_attribute_values.custom_attribute_id', $attr->id);
 
         $results = $q->get();
 
@@ -429,7 +429,7 @@ class CustomAttributeTest extends FunctionalTestCase
         // Note that since this is a many-to-one relationship (belongsTo), the
         // 'inventories' key contains only the single model, as opposed to the previous
         // test, where the 'custom_attribute_values' key contains many models.
-        $this->assertEquals($first->toArray()['inventories']['id'], $item->id);
+        $this->assertEquals($first->toArray()['inventory']['id'], $item->id);
     }
 
     

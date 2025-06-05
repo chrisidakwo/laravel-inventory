@@ -76,13 +76,6 @@ trait InventoryTrait
     abstract public function suppliers(): BelongsToMany;
 
     /**
-     * The belongsToMany supplier SKU relationship.
-     *
-     * @return HasMany
-     */
-    abstract public function supplierSKUs(): HasMany;
-
-    /**
      * The hasManyThrough attributes relationship.
      * 
      * @return BelongsToMany
@@ -536,12 +529,12 @@ trait InventoryTrait
      * @param $fromLocation
      * @param $toLocation
      *
-     * @return bool
+     * @return bool|InventoryStock
      * @throws InvalidLocationException
      *
      * @throws StockNotFoundException
      */
-    public function moveStock($fromLocation, $toLocation): bool
+    public function moveStock($fromLocation, $toLocation): bool|InventoryStock
     {
         $stock = $this->getStockFromLocation($fromLocation);
 
@@ -727,7 +720,30 @@ trait InventoryTrait
     {
         $supplierModel = $this->resolveSupplier($supplier);
 
-        $this->supplierSKUs()->updateOrCreate(['supplier_id'=>$supplierModel->id], ['supplier_id' => $supplierModel->id, 'supplier_sku' => $sku]);
+        $record = $this->suppliers()->where([
+            'supplier_id' => $supplierModel->id,
+            'inventory_id' => $this->getKey(),
+        ])->first();
+
+        if (!$record) {
+            $this->suppliers()->attach($supplierModel->id, [
+                'inventory_id' => $this->getKey(),
+                'supplier_sku' => $sku,
+            ]);
+        } else {
+            $this->suppliers()->updateExistingPivot($supplierModel->id, [
+                'supplier_sku' => $sku
+            ]);
+        }
+
+//        $this->suppliers()->updateOrCreate([
+//            'supplier_id' => $supplierModel->id,
+//            'inventory_id' => $this->getKey(),
+//        ], [
+//            'supplier_id' => $supplierModel->id,
+//            'inventory_id' => $this->getKey(),
+//            'supplier_sku' => $sku
+//        ]);
     }
 
     /**
@@ -743,24 +759,17 @@ trait InventoryTrait
     public function getSupplierSKU(Supplier|int|string $supplier): string
     {
         $supplierModel = $this->resolveSupplier($supplier);
-        $sku = $this->supplierSKUs->where('supplier_id', $supplierModel->id)->first();
+        $sku = $this->suppliers()->where('supplier_id', $supplierModel->id)->first();
         
-        return $sku->supplier_sku;
+        return $sku->pivot->supplier_sku;
     }
 
     /**
      * @throws InvalidSupplierException
      */
-    public function updateSupplierSKU(Supplier|int|string $supplier, $sku) {
-        $supplierModel = $this->resolveSupplier($supplier);
-
-        return $this->supplierSKUs()->updateOrCreate(
-            ['supplier_id'=>$supplierModel->id],
-            [
-                'supplier_id' => $supplierModel->id,
-                'supplier_sku' => $sku
-            ]
-        );
+    public function updateSupplierSKU(Supplier|int|string $supplier, $sku): void
+    {
+        $this->addSupplierSKU($supplier, $sku);
     }
 
     /**

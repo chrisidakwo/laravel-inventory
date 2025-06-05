@@ -42,7 +42,6 @@ class InventoryStock extends BaseModel
      */
     public function movements(): HasMany
     {
-        dd(config('inventory.models.inventory_stock_movement'));
         return $this->hasMany(config('inventory.models.inventory_stock_movement'), 'stock_id', 'id');
     }
 

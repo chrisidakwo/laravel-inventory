@@ -33,8 +33,50 @@ class FunctionalTestCase extends TestCase
         Config::set('inventory'.InventoryServiceProvider::$packageConfigSeparator.'sku_separator', '-');
         Config::set('inventory'.InventoryServiceProvider::$packageConfigSeparator.'sku_prefix_length', '3');
         Config::set('inventory'.InventoryServiceProvider::$packageConfigSeparator.'sku_code_length', '6');
+        Config::set('inventory'.InventoryServiceProvider::$packageConfigSeparator.'rollback_cost', true);
         // $this->configureDatabase();
         // $this->migrateTables();
+
+        Config::set(
+            'inventory'.InventoryServiceProvider::$packageConfigSeparator.'models'.InventoryServiceProvider::$packageConfigSeparator.'category',
+            '\Stevebauman\Inventory\Models\Category'
+        );
+        Config::set(
+            'inventory'.InventoryServiceProvider::$packageConfigSeparator.'models'.InventoryServiceProvider::$packageConfigSeparator.'inventory',
+            '\Stevebauman\Inventory\Models\Inventory'
+        );
+        Config::set(
+            'inventory'.InventoryServiceProvider::$packageConfigSeparator.'models'.InventoryServiceProvider::$packageConfigSeparator.'inventory_sku',
+            '\Stevebauman\Inventory\Models\InventorySku'
+        );
+        Config::set(
+            'inventory'.InventoryServiceProvider::$packageConfigSeparator.'models'.InventoryServiceProvider::$packageConfigSeparator.'inventory_stock',
+            '\Stevebauman\Inventory\Models\InventoryStock'
+        );
+        Config::set(
+            'inventory'.InventoryServiceProvider::$packageConfigSeparator.'models'.InventoryServiceProvider::$packageConfigSeparator.'inventory_stock_movement',
+            '\Stevebauman\Inventory\Models\InventoryStockMovement'
+        );
+        Config::set(
+            'inventory'.InventoryServiceProvider::$packageConfigSeparator.'models'.InventoryServiceProvider::$packageConfigSeparator.'inventory_transaction',
+            '\Stevebauman\Inventory\Models\InventoryTransaction'
+        );
+        Config::set(
+            'inventory'.InventoryServiceProvider::$packageConfigSeparator.'models'.InventoryServiceProvider::$packageConfigSeparator.'inventory_transaction_history',
+            '\Stevebauman\Inventory\Models\InventoryTransactionHistory'
+        );
+        Config::set(
+            'inventory'.InventoryServiceProvider::$packageConfigSeparator.'models'.InventoryServiceProvider::$packageConfigSeparator.'location',
+            '\Stevebauman\Inventory\Models\Location'
+        );
+        Config::set(
+            'inventory'.InventoryServiceProvider::$packageConfigSeparator.'models'.InventoryServiceProvider::$packageConfigSeparator.'metric',
+            '\Stevebauman\Inventory\Models\Metric'
+        );
+        Config::set(
+            'inventory'.InventoryServiceProvider::$packageConfigSeparator.'models'.InventoryServiceProvider::$packageConfigSeparator.'supplier',
+            '\Stevebauman\Inventory\Models\Supplier'
+        );
     }
     
     public static function setUpBeforeClass(): void
