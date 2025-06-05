@@ -2,6 +2,7 @@
 
 namespace Stevebauman\Inventory\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Stevebauman\Inventory\Traits\CategoryTrait;
 use Baum\Node;
 
@@ -23,10 +24,10 @@ class Category extends Node
     /**
      * The hasMany inventories relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function inventories()
+    public function inventories(): HasMany
     {
-        return $this->hasMany(Inventory::class, 'category_id', 'id');
+        return $this->hasMany(config('inventory.models.inventory'), 'category_id', 'id');
     }
 }

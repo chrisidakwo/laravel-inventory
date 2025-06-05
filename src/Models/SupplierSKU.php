@@ -2,6 +2,9 @@
 
 namespace Stevebauman\Inventory\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 class SupplierSKU extends BaseModel
 {
     protected $table = 'inventory_suppliers';
@@ -13,15 +16,15 @@ class SupplierSKU extends BaseModel
     /**
      * The belongsToMany items relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
-    public function items()
+    public function items(): BelongsToMany
     {
-        return $this->belongsToMany(Inventory::class, 'inventory_suppliers', 'supplier_id')->withTimestamps();
+        return $this->belongsToMany(config('inventory.models.inventory'), 'inventory_suppliers', 'supplier_id')->withTimestamps();
     }
 
-    public function supplier()
+    public function supplier(): BelongsTo
     {
-        return $this->belongsTo(Supplier::class, 'inventory_suppliers', 'supplier_id');
+        return $this->belongsTo(config('inventory.models.supplier'), 'inventory_suppliers', 'supplier_id');
     }
 }

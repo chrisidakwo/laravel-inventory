@@ -3,6 +3,7 @@
 namespace Stevebauman\Inventory\Models;
 
 use Baum\Node;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Location.
@@ -29,19 +30,19 @@ class Location extends Node
     /**
      * The hasMany stocks relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function stocks()
+    public function stocks(): HasMany
     {
-        return $this->hasMany(InventoryStock::class, 'location_id', 'id');
+        return $this->hasMany(config('inventory.models.inventory_stock'), 'location_id', 'id');
     }
 
     /**
      * The hasMany locationContacts relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function contacts()
+    public function contacts(): HasMany
     {
         return $this->hasMany(LocationContact::class, 'location_id', 'id');
     }

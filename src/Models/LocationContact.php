@@ -2,6 +2,8 @@
 
 namespace Stevebauman\Inventory\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 /**
  * Class LocationContact.
  */
@@ -20,10 +22,10 @@ class LocationContact extends BaseModel
     /**
      * The belongsTo location relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function location()
+    public function location(): BelongsTo
     {
-        return $this->belongsTo(Location::class, 'location_id', 'id');
+        return $this->belongsTo(config('inventory.models.location'), 'location_id', 'id');
     }
 }

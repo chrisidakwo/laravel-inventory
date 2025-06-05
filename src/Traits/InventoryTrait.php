@@ -2,14 +2,22 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Stevebauman\Inventory\Exceptions\InvalidLocationException;
+use Stevebauman\Inventory\Exceptions\InvalidQuantityException;
 use Stevebauman\Inventory\Exceptions\InvalidSupplierException;
-use Stevebauman\Inventory\Exceptions\SkuAlreadyExistsException;
+use Stevebauman\Inventory\Exceptions\NotEnoughStockException;
 use Stevebauman\Inventory\Exceptions\StockNotFoundException;
 use Stevebauman\Inventory\Exceptions\StockAlreadyExistsException;
 use Stevebauman\Inventory\Exceptions\IsParentException;
 use Stevebauman\Inventory\InventoryServiceProvider;
-use Stevebauman\Inventory\Models\SupplierSKU;
+use Stevebauman\Inventory\Models\Inventory;
+use Stevebauman\Inventory\Models\InventoryStock;
+use Stevebauman\Inventory\Models\Supplier;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 
@@ -30,7 +38,7 @@ trait InventoryTrait
 
     /*
      * Sets the model's constructor method to automatically assign the
-     * created_by attribute to the current logged in user
+     * created_by attribute to the current logged-in user
      */
     use UserIdentificationTrait;
 
@@ -42,50 +50,50 @@ trait InventoryTrait
     /**
      * The hasOne category relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
-    abstract public function category();
+    abstract public function category(): HasOne;
 
     /**
      * The hasOne metric relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
-    abstract public function metric();
+    abstract public function metric(): HasOne;
 
     /**
      * The hasMany stocks relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    abstract public function stocks();
+    abstract public function stocks(): HasMany;
 
     /**
      * The belongsToMany suppliers relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
-    abstract public function suppliers();
+    abstract public function suppliers(): BelongsToMany;
 
     /**
      * The belongsToMany supplier SKU relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return HasMany
      */
-    abstract public function supplierSKUs();
+    abstract public function supplierSKUs(): HasMany;
 
     /**
      * The hasManyThrough attributes relationship.
      * 
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     * @return BelongsToMany
      */
-    abstract public function customAttributes();
+    abstract public function customAttributes(): BelongsToMany;
 
     /**
      * Overrides the models boot function to set the user
      * ID automatically to every new record.
      */
-    public static function bootInventoryTrait()
+    public static function bootInventoryTrait(): void
     {
         /*
          * Assign the current users ID while the item
@@ -97,41 +105,44 @@ trait InventoryTrait
     }
 
     /**
-     * Returns an item record by the specified SKU code.
+     * Returns an item record by the specified supplier's SKU code.
      *
      * @param string $sku
      *
-     * @return bool
+     * @return Model
+     * @throws Exception
      */
-    public static function findBySku($sku)
+    public static function findBySku(string $sku): Model
     {
-        /*
-         * Create a new static instance
-         */
-        $instance = new static();
+        throw new Exception('Not fully implemented');
 
-        /*
-         * Try and find the SKU record
-         */
-        $sku = $instance
-            ->sku()
-            ->getRelated()
-            ->with('item')
-            ->where('code', $sku)
-            ->first();
-
-        /*
-         * Check if the SKU was found, and if an item is
-         * attached to the SKU we'll return it
-         */
-        if ($sku && $sku->item) {
-            return $sku->item;
-        }
-
-        /*
-         * Return false on failure
-         */
-        return false;
+//        /*
+//         * Create a new static instance
+//         */
+//        $instance = new static();
+//
+//        /*
+//         * Try and find the SKU record
+//         */
+//        $sku = $instance
+//            ->supplierSKUs()
+//            ->getRelated()
+//            ->with('item')
+//            ->where('code', $sku)
+//            ->first();
+//
+//        /*
+//         * Check if the SKU was found, and if an item is
+//         * attached to the SKU we'll return it
+//         */
+//        if ($sku && $sku->item) {
+//            return $sku->item;
+//        }
+//
+//        /*
+//         * Return false on failure
+//         */
+//        return false;
     }
 
     /**
@@ -139,7 +150,7 @@ trait InventoryTrait
      *
      * @return int|float
      */
-    public function getTotalStock()
+    public function getTotalStock(): float|int
     {
         return $this->stocks->sum('quantity');
     }
@@ -149,7 +160,7 @@ trait InventoryTrait
      *
      * @return bool
      */
-    public function hasMetric()
+    public function hasMetric(): bool
     {
         if ($this->metric) {
             return true;
@@ -163,7 +174,7 @@ trait InventoryTrait
      *
      * @return bool
      */
-    public function hasSku()
+    public function hasSku(): bool
     {
         if ($this->sku) {
             return true;
@@ -177,7 +188,7 @@ trait InventoryTrait
      *
      * @return bool
      */
-    public function hasCategory()
+    public function hasCategory(): bool
     {
         if ($this->category) {
             return true;
@@ -191,13 +202,13 @@ trait InventoryTrait
      *
      * @return string|null
      */
-    public function getMetricSymbol()
+    public function getMetricSymbol(): ?string
     {
         if ($this->hasMetric()) {
             return $this->metric->symbol;
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -205,31 +216,29 @@ trait InventoryTrait
      *
      * @return bool
      */
-    public function isInStock()
+    public function isInStock(): bool
     {
-        return ($this->getTotalStock() > 0 ? true : false);
+        return $this->getTotalStock() > 0;
     }
 
     /**
      * Creates a stock record to the current inventory item.
      *
-     * @param int|float|string $quantity
+     * @param float|int $quantity
      * @param $location
-     * @param string           $reason
-     * @param int|float|string $cost
-     * @param null             $aisle
-     * @param null             $row
-     * @param null             $bin
+     * @param string $reason
+     * @param float|int $cost
+     * @param null $aisle
+     * @param null $row
+     * @param null $bin
      *
+     * @return false|InventoryStock
+     * @throws InvalidLocationException
+     * @throws InvalidQuantityException
+     * @throws IsParentException
      * @throws StockAlreadyExistsException
-     * @throws StockNotFoundException
-     * @throws \Stevebauman\Inventory\Exceptions\InvalidLocationException
-     * @throws \Stevebauman\Inventory\Exceptions\NoUserLoggedInException
-     * @throws \Stevebauman\Inventory\Exceptions\IsParentException
-     *
-     * @return Model
      */
-    public function createStockOnLocation($quantity, $location, $reason = '', $cost = 0, $aisle = null, $row = null, $bin = null)
+    public function createStockOnLocation(float|int $quantity, $location, string $reason = '', float|int $cost = 0, $aisle = null, $row = null, $bin = null): false|InventoryStock
     {
         if (!$this->is_parent) {
 
@@ -258,9 +267,11 @@ trait InventoryTrait
                     'row' => $row,
                     'bin' => $bin,
                 ];
-    
-                /*
-                 * We'll perform a create so a 'first' movement is generated
+
+                /**
+                 * We'll perform a "create" so a 'first' movement is generated
+                 *
+                 * @var InventoryStock $stock
                  */
                 $stock = $this->stocks()->create($insert);
     
@@ -287,12 +298,12 @@ trait InventoryTrait
      *
      * @param $location
      *
+     * @return InventoryStock|null
+     * @throws InvalidLocationException
+     * @throws IsParentException
      * @throws StockAlreadyExistsException
-     * @throws \Stevebauman\Inventory\Exceptions\InvalidLocationException
-     *
-     * @return \Illuminate\Database\Eloquent\Model
      */
-    public function newStockOnLocation($location)
+    public function newStockOnLocation($location): ?InventoryStock
     {
         if (!$this->is_parent) {
             $location = $this->getLocation($location);
@@ -330,20 +341,24 @@ trait InventoryTrait
 
             throw new IsParentException($message);
         }
+
+        return null;
     }
 
     /**
      * Takes the specified amount ($quantity) of stock from specified stock location.
      *
-     * @param int|float|string $quantity
+     * @param float|int $quantity
      * @param $location
-     * @param string           $reason
+     * @param string $reason
      *
+     * @return bool|array|InventoryTrait
+     * @throws InvalidLocationException
+     * @throws InvalidQuantityException
      * @throws StockNotFoundException
-     *
-     * @return Model $this
+     * @throws NotEnoughStockException
      */
-    public function takeFromLocation($quantity, $location, $reason = '')
+    public function takeFromLocation(float|int $quantity, $location, string $reason = ''): bool|array|static
     {
         /*
          * If the specified location is an array, we must be taking from
@@ -365,15 +380,17 @@ trait InventoryTrait
     /**
      * Takes the specified amount ($quantity) of stock from the specified stock locations.
      *
-     * @param int|float|string $quantity
-     * @param array            $locations
-     * @param string           $reason
-     *
-     * @throws StockNotFoundException
+     * @param float|int $quantity
+     * @param array $locations
+     * @param string $reason
      *
      * @return array
+     * @throws InvalidLocationException
+     * @throws InvalidQuantityException
+     * @throws NotEnoughStockException
+     * @throws StockNotFoundException
      */
-    public function takeFromManyLocations($quantity, $locations = [], $reason = '')
+    public function takeFromManyLocations(float|int $quantity, array $locations = [], string $reason = ''): array
     {
         $stocks = [];
 
@@ -389,13 +406,17 @@ trait InventoryTrait
     /**
      * Alias for the `take` function.
      *
-     * @param int|float|string $quantity
+     * @param float|int $quantity
      * @param $location
-     * @param string           $reason
+     * @param string $reason
      *
-     * @return array
+     * @return array|bool|Inventory|InventoryTrait
+     * @throws InvalidLocationException
+     * @throws InvalidQuantityException
+     * @throws NotEnoughStockException
+     * @throws StockNotFoundException
      */
-    public function removeFromLocation($quantity, $location, $reason = '')
+    public function removeFromLocation(float|int $quantity, $location, string $reason = ''): Inventory|bool|array|static
     {
         return $this->takeFromLocation($quantity, $location, $reason);
     }
@@ -404,12 +425,16 @@ trait InventoryTrait
      * Alias for the `takeFromMany` function.
      *
      * @param int|float|string $quantity
-     * @param array            $locations
-     * @param string           $reason
+     * @param array $locations
+     * @param string $reason
      *
      * @return array
+     * @throws InvalidLocationException
+     * @throws InvalidQuantityException
+     * @throws NotEnoughStockException
+     * @throws StockNotFoundException
      */
-    public function removeFromManyLocations($quantity, $locations = [], $reason = '')
+    public function removeFromManyLocations($quantity, array $locations = [], string $reason = ''): array
     {
         return $this->takeFromManyLocations($quantity, $locations, $reason);
     }
@@ -417,16 +442,17 @@ trait InventoryTrait
     /**
      * Puts the specified amount ($quantity) of stock into the specified stock location(s).
      *
-     * @param int|float|string $quantity
+     * @param float|int $quantity
      * @param $location
-     * @param string           $reason
-     * @param int|float|string $cost
+     * @param string $reason
+     * @param int $cost
      *
+     * @return array|static|false
+     * @throws InvalidLocationException
+     * @throws InvalidQuantityException
      * @throws StockNotFoundException
-     *
-     * @return array
      */
-    public function putToLocation($quantity, $location, $reason = '', $cost = 0)
+    public function putToLocation(float|int $quantity, $location, string $reason = '', int $cost = 0): array|static|false
     {
         if (is_array($location)) {
             return $this->putToManyLocations($quantity, $location);
@@ -444,16 +470,18 @@ trait InventoryTrait
     /**
      * Puts the specified amount ($quantity) of stock into the specified stock locations.
      *
-     * @param int|float|string $quantity
-     * @param array            $locations
-     * @param string           $reason
-     * @param int|float|string $cost
-     *
-     * @throws StockNotFoundException
+     * @param float|int $quantity
+     * @param array $locations
+     * @param string $reason
+     * @param float|int $cost
      *
      * @return array
+     * @throws StockNotFoundException
+     * @throws InvalidLocationException
+     * @throws InvalidQuantityException
+     *
      */
-    public function putToManyLocations($quantity, $locations = [], $reason = '', $cost = 0)
+    public function putToManyLocations(float|int $quantity, array $locations = [], string $reason = '', float|int $cost = 0): array
     {
         $stocks = [];
 
@@ -469,14 +497,17 @@ trait InventoryTrait
     /**
      * Alias for the `put` function.
      *
-     * @param int|float|string $quantity
+     * @param float|int $quantity
      * @param $location
-     * @param string           $reason
-     * @param int|float|string $cost
+     * @param string $reason
+     * @param float|int $cost
      *
      * @return array
+     * @throws InvalidLocationException
+     * @throws InvalidQuantityException
+     * @throws StockNotFoundException
      */
-    public function addToLocation($quantity, $location, $reason = '', $cost = 0)
+    public function addToLocation(float|int $quantity, $location, string $reason = '', float|int $cost = 0): array
     {
         return $this->putToLocation($quantity, $location, $reason, $cost);
     }
@@ -484,14 +515,17 @@ trait InventoryTrait
     /**
      * Alias for the `putToMany` function.
      *
-     * @param int|float|string $quantity
-     * @param array            $locations
-     * @param string           $reason
-     * @param int|float|string $cost
+     * @param float|int $quantity
+     * @param array $locations
+     * @param string $reason
+     * @param float|int $cost
      *
      * @return array
+     * @throws InvalidLocationException
+     * @throws InvalidQuantityException
+     * @throws StockNotFoundException
      */
-    public function addToManyLocations($quantity, $locations = [], $reason = '', $cost = 0)
+    public function addToManyLocations(float|int $quantity, array $locations = [], string $reason = '', float|int $cost = 0): array
     {
         return $this->putToManyLocations($quantity, $locations, $reason, $cost);
     }
@@ -502,11 +536,12 @@ trait InventoryTrait
      * @param $fromLocation
      * @param $toLocation
      *
-     * @throws StockNotFoundException
+     * @return bool
+     * @throws InvalidLocationException
      *
-     * @return mixed
+     * @throws StockNotFoundException
      */
-    public function moveStock($fromLocation, $toLocation)
+    public function moveStock($fromLocation, $toLocation): bool
     {
         $stock = $this->getStockFromLocation($fromLocation);
 
@@ -520,12 +555,12 @@ trait InventoryTrait
      *
      * @param $location
      *
-     * @throws \Stevebauman\Inventory\Exceptions\InvalidLocationException
+     * @throws InvalidLocationException
      * @throws StockNotFoundException
      *
-     * @return mixed
+     * @return InventoryStock
      */
-    public function getStockFromLocation($location)
+    public function getStockFromLocation($location): InventoryStock
     {
         $location = $this->getLocation($location);
 
@@ -550,24 +585,26 @@ trait InventoryTrait
      *
      * @return null|string
      */
-    public function getSku()
+    public function getSku(): ?string
     {
         if ($this->hasSku()) {
             return $this->sku;
         }
 
-        return;
+        return null;
     }
 
     /**
-     * Adds all of the specified suppliers inside
+     * Adds all the specified suppliers inside
      * the array to the current inventory item.
      *
      * @param array $suppliers
      *
      * @return bool
+     * @throws InvalidSupplierException
+     * @throws IsParentException
      */
-    public function addSuppliers($suppliers = [])
+    public function addSuppliers(array $suppliers = []): bool
     {
         if (!$this->is_parent) {
             foreach ($suppliers as $supplier) {
@@ -588,8 +625,9 @@ trait InventoryTrait
      * Removes all suppliers from the current item.
      *
      * @return bool
+     * @throws InvalidSupplierException
      */
-    public function removeAllSuppliers()
+    public function removeAllSuppliers(): bool
     {
         $suppliers = $this->suppliers()->get();
 
@@ -601,14 +639,15 @@ trait InventoryTrait
     }
 
     /**
-     * Removes all of the specified suppliers inside
+     * Removes all the specified suppliers inside
      * the array from the current inventory item.
      *
      * @param array $suppliers
      *
      * @return bool
+     * @throws InvalidSupplierException
      */
-    public function removeSuppliers($suppliers = [])
+    public function removeSuppliers(array $suppliers = []): bool
     {
         foreach ($suppliers as $supplier) {
             $this->removeSupplier($supplier);
@@ -620,13 +659,13 @@ trait InventoryTrait
     /**
      * Adds the specified supplier to the current inventory item.
      *
-     * @param $supplier
-     *
-     * @throws InvalidSupplierException
+     * @param Supplier|int|string $supplier
      *
      * @return bool
+     * @throws InvalidSupplierException
+     * @throws IsParentException
      */
-    public function addSupplier($supplier)
+    public function addSupplier(Supplier|int|string $supplier): bool
     {
         if (!$this->is_parent) {
             $supplier = $this->getSupplier($supplier);
@@ -644,13 +683,13 @@ trait InventoryTrait
     /**
      * Removes the specified supplier from the current inventory item.
      *
-     * @param $supplier
+     * @param Supplier|int|string $supplier
      *
      * @throws InvalidSupplierException
      *
      * @return bool
      */
-    public function removeSupplier($supplier)
+    public function removeSupplier(Supplier|int|string $supplier): bool
     {
         $supplier = $this->getSupplier($supplier);
 
@@ -660,13 +699,13 @@ trait InventoryTrait
     /**
      * Retrieves a supplier from the specified variable.
      *
-     * @param $supplier
+     * @param Supplier|int|string $supplier
+     *
+     * @return Supplier|null
      *
      * @throws InvalidSupplierException
-     *
-     * @return mixed
      */
-    public function getSupplier($supplier)
+    public function getSupplier(Supplier|int|string $supplier): Supplier|null
     {
         if ($this->isNumeric($supplier)) {
             return $this->getSupplierById($supplier);
@@ -681,7 +720,10 @@ trait InventoryTrait
         }
     }
 
-    public function addSupplierSKU($supplier, $sku)
+    /**
+     * @throws InvalidSupplierException
+     */
+    public function addSupplierSKU(Supplier|int|string $supplier, $sku): void
     {
         $supplierModel = $this->resolveSupplier($supplier);
 
@@ -690,14 +732,15 @@ trait InventoryTrait
 
     /**
      * TODO:
-     * Retrieves the sku code corresponding to this inventory item 
+     * Retrieves the sku code corresponding to this inventory item
      * for the given supplier
      *
      * @param mixed $supplier
-     * 
+     *
      * @return string
+     * @throws InvalidSupplierException
      */
-    public function getSupplierSKU($supplier) 
+    public function getSupplierSKU(Supplier|int|string $supplier): string
     {
         $supplierModel = $this->resolveSupplier($supplier);
         $sku = $this->supplierSKUs->where('supplier_id', $supplierModel->id)->first();
@@ -705,18 +748,19 @@ trait InventoryTrait
         return $sku->supplier_sku;
     }
 
-    public function updateSupplierSKU($supplier, $sku) {
+    /**
+     * @throws InvalidSupplierException
+     */
+    public function updateSupplierSKU(Supplier|int|string $supplier, $sku) {
         $supplierModel = $this->resolveSupplier($supplier);
 
-        $skuModel = $this->supplierSKUs()->updateOrCreate(
-            ['supplier_id'=>$supplierModel->id], 
+        return $this->supplierSKUs()->updateOrCreate(
+            ['supplier_id'=>$supplierModel->id],
             [
-                'supplier_id' => $supplierModel->id, 
+                'supplier_id' => $supplierModel->id,
                 'supplier_sku' => $sku
             ]
         );
-
-        return $skuModel;
     }
 
     /**
@@ -725,11 +769,12 @@ trait InventoryTrait
      *
      * @param mixed $supplier
      * 
-     * @return \Stevebauman\Inventory\Models\Supplier
+     * @return Supplier
      * 
      * @throws InvalidSupplierException
      */
-    private function resolveSupplier($supplier) {
+    private function resolveSupplier(Supplier|int|string $supplier): Supplier
+    {
         $s = null;
         if ($this->isNumeric($supplier)) {
             $s = $this->getSupplierById($supplier);
@@ -755,9 +800,9 @@ trait InventoryTrait
      * @param Model  $sku
      * @param string $code
      *
-     * @return mixed|bool
+     * @return Model|false
      */
-    private function processSkuUpdate(Model $sku, $code)
+    private function processSkuUpdate(Model $sku, string $code): Model|false
     {
         $this->dbStartTransaction();
 
@@ -767,7 +812,7 @@ trait InventoryTrait
 
                 return $sku;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->dbRollbackTransaction();
         }
 
@@ -781,7 +826,7 @@ trait InventoryTrait
      *
      * @return bool
      */
-    private function processSupplierAttach(Model $supplier)
+    private function processSupplierAttach(Model $supplier): bool
     {
         $this->dbStartTransaction();
 
@@ -796,7 +841,7 @@ trait InventoryTrait
             ]);
 
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->dbRollbackTransaction();
         }
 
@@ -810,7 +855,7 @@ trait InventoryTrait
      *
      * @return bool
      */
-    private function processSupplierDetach(Model $supplier)
+    private function processSupplierDetach(Model $supplier): bool
     {
         $this->dbStartTransaction();
 
@@ -825,7 +870,7 @@ trait InventoryTrait
             ]);
 
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->dbRollbackTransaction();
         }
 
@@ -835,11 +880,11 @@ trait InventoryTrait
     /**
      * Returns a supplier by the specified ID.
      *
-     * @param int|string $id
+     * @param Model|array|int|string $id
      *
-     * @return mixed
+     * @return Supplier|null
      */
-    private function getSupplierById($id)
+    private function getSupplierById(Model|array|int|string $id): ?Supplier
     {
         return $this->suppliers()->find($id);
     }
@@ -848,9 +893,9 @@ trait InventoryTrait
      * Returns the configuration option for the
      * enablement of automatic SKU generation.
      *
-     * @return mixed
+     * @return bool
      */
-    private function skusEnabled()
+    private function skusEnabled(): bool
     {
         return Config::get('inventory'.InventoryServiceProvider::$packageConfigSeparator.'skus_enabled', false);
     }

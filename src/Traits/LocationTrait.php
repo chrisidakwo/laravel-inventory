@@ -2,6 +2,7 @@
 
 namespace Stevebauman\Inventory\Traits;
 
+use Exception;
 use Stevebauman\Inventory\Exceptions\InvalidLocationException;
 use Illuminate\Support\Facades\Lang;
 use Stevebauman\Inventory\Models\Location;
@@ -13,24 +14,21 @@ trait LocationTrait
 {
     /**
      * Returns a location depending on the specified argument. If an object is supplied, it is checked if it
-     * is an instance of the model Location, if a numeric value is entered, it is retrieved by it's ID.
+     * is an instance of the model Location, if a numeric value is entered, it is retrieved by its ID.
      *
-     * @param $location
+     * @param Location|int $location
      *
+     * @return Location|null
      * @throws InvalidLocationException
-     *
-     * @return mixed
      */
-    public function getLocation($location)
+    public function getLocation(Location|int $location): Location|null
     {
         if ($this->isLocation($location)) {
             return $location;
         } else if (is_numeric($location)) {
             try {
-                $result = Location::where('id', '=', $location)->first();
-
-                return $result;
-            } catch (\Exception $e) {
+                return Location::query()->where('id', '=', $location)->first();
+            } catch (Exception) {
                 $message = Lang::get('inventory::exceptions.InvalidLocationException', [
                     'location' => $location,
                 ]);
@@ -53,7 +51,7 @@ trait LocationTrait
      *
      * @return bool
      */
-    private function isLocation($object)
+    private function isLocation(mixed $object): bool
     {
         return is_subclass_of($object, 'Illuminate\Database\Eloquent\Model');
     }

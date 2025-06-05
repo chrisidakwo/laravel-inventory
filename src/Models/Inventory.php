@@ -2,6 +2,9 @@
 
 namespace Stevebauman\Inventory\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Stevebauman\Inventory\Traits\AssemblyTrait;
 use Stevebauman\Inventory\Traits\CustomAttributeTrait;
 use Stevebauman\Inventory\Traits\BundleTrait;
@@ -35,60 +38,60 @@ class Inventory extends BaseModel
     /**
      * The hasOne category relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
-    public function category()
+    public function category(): HasOne
     {
-        return $this->hasOne(Category::class, 'id', 'category_id');
+        return $this->hasOne(config('inventory.models.category'), 'id', 'category_id');
     }
 
     /**
      * The hasOne metric relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
-    public function metric()
+    public function metric(): HasOne
     {
-        return $this->hasOne(Metric::class, 'id', 'metric_id');
+        return $this->hasOne(config('inventory.models.metric'), 'id', 'metric_id');
     }
 
     /**
      * The hasMany stocks relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function stocks()
+    public function stocks(): HasMany
     {
-        return $this->hasMany(InventoryStock::class, 'inventory_id', 'id');
+        return $this->hasMany(config('inventory.models.inventory_stock'), 'inventory_id', 'id');
     }
 
     /**
      * The belongsToMany suppliers relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
-    public function suppliers()
+    public function suppliers(): BelongsToMany
     {
-        return $this->belongsToMany(Supplier::class, 'inventory_suppliers', 'inventory_id')
+        return $this->belongsToMany(config('inventory.models.supplier'), 'inventory_suppliers', 'inventory_id')
             ->withTimestamps();
     }
 
     /**
      * The belongsToMany supplier SKU relationship.
      * 
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return HasMany
      */
-    public function supplierSKUs()
+    public function supplierSKUs(): HasMany
     {
-        return $this->hasMany(SupplierSKU::class, 'inventory_id', 'id');
+        return $this->hasMany(config('inventory.models.supplier'), 'inventory_suppliers', 'inventory_id');
     }
 
     /**
      * The belongsToMany assemblies relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
-    public function assemblies()
+    public function assemblies(): BelongsToMany
     {
         return $this->belongsToMany($this, 'inventory_assemblies', 'inventory_id', 'part_id')
             ->withPivot(['quantity'])
@@ -98,9 +101,9 @@ class Inventory extends BaseModel
     /**
      * The belongsToMany bundles relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
-    public function bundles()
+    public function bundles(): BelongsToMany
     {
         return $this->belongsToMany($this, 'inventory_bundles', 'inventory_id', 'component_id')
             ->withPivot(['quantity'])
@@ -110,9 +113,9 @@ class Inventory extends BaseModel
     /**
      * The BelongsToMany customAttributes relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
-    public function customAttributes()
+    public function customAttributes(): BelongsToMany
     {
         return $this->belongsToMany(CustomAttribute::class, 'custom_attribute_values', 'inventory_id', 'custom_attribute_id')
             ->withPivot("string_val", "num_val", "date_val")
@@ -124,9 +127,9 @@ class Inventory extends BaseModel
     /**
      * The belongsToMany attributeValues relationship.
      * 
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-     public function customAttributeValues()
+     public function customAttributeValues(): HasMany
      {
         return $this->hasMany(CustomAttributeValue::class, 'inventory_id');
      }

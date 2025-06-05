@@ -2,6 +2,8 @@
 
 namespace Stevebauman\Inventory\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 /**
  * Class Metric.
  */
@@ -18,10 +20,10 @@ class Metric extends BaseModel
     /**
      * The hasMany inventory items relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function items()
+    public function items(): HasMany
     {
-        return $this->hasMany(Inventory::class, 'metric_id', 'id');
+        return $this->hasMany(config('inventory.models.inventory'), 'metric_id', 'id');
     }
 }

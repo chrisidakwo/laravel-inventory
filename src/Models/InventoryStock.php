@@ -2,6 +2,9 @@
 
 namespace Stevebauman\Inventory\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Stevebauman\Inventory\Traits\InventoryStockTrait;
 
 /**
@@ -25,40 +28,40 @@ class InventoryStock extends BaseModel
     /**
      * The belongsTo inventory item relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function item()
+    public function item(): BelongsTo
     {
-        return $this->belongsTo(Inventory::class, 'inventory_id', 'id');
+        return $this->belongsTo(config('inventory.models.inventory'), 'inventory_id', 'id');
     }
 
     /**
      * The hasMany movements relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function movements()
+    public function movements(): HasMany
     {
-        return $this->hasMany(InventoryStockMovement::class, 'stock_id', 'id');
+        return $this->hasMany(config('inventory.models.inventory_stock_movement'), 'stock_id', 'id');
     }
 
     /**
      * The hasMany transactions relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function transactions()
+    public function transactions(): HasMany
     {
-        return $this->hasMany(InventoryTransaction::class, 'stock_id', 'id');
+        return $this->hasMany(config('inventory.models.inventory_transaction'), 'stock_id', 'id');
     }
 
     /**
      * The hasOne location relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
-    public function location()
+    public function location(): HasOne
     {
-        return $this->hasOne(Location::class, 'id', 'location_id');
+        return $this->hasOne(config('inventory.models.location'), 'id', 'location_id');
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Stevebauman\Inventory\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Stevebauman\Inventory\Traits\InventoryTransactionTrait;
 use Stevebauman\Inventory\Interfaces\StateableInterface;
 
@@ -25,20 +27,20 @@ class InventoryTransaction extends BaseModel implements StateableInterface
     /**
      * The belongsTo stock relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function stock()
+    public function stock(): BelongsTo
     {
-        return $this->belongsTo(InventoryStock::class, 'stock_id', 'id');
+        return $this->belongsTo(config('inventory.models.inventory_stock'), 'stock_id', 'id');
     }
 
     /**
      * The hasMany histories relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function histories()
+    public function histories(): HasMany
     {
-        return $this->hasMany(InventoryTransactionHistory::class, 'transaction_id', 'id');
+        return $this->hasMany(config('inventory.models.inventory_transaction_history'), 'transaction_id', 'id');
     }
 }

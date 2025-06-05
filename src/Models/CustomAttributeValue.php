@@ -2,6 +2,8 @@
 
 namespace Stevebauman\Inventory\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 /**
  * Class CustomAttributeValue.
  */
@@ -22,19 +24,19 @@ class CustomAttributeValue extends BaseModel
     /**
      * The hasOne inventories relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return BelongsTo
      */
-    public function inventories()
+    public function inventory(): BelongsTo
     {
-        return $this->belongsTo(Inventory::class, 'inventory_id');
+        return $this->belongsTo(config('inventory.models.inventory'), 'inventory_id');
     }
 
     /**
      * The hasOne attribute relationship.
      * 
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function customAttribute()
+    public function customAttribute(): BelongsTo
     {
         return $this->belongsTo(CustomAttribute::class);
     }

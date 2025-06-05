@@ -2,6 +2,7 @@
 
 namespace Stevebauman\Inventory\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Stevebauman\Inventory\Traits\InventoryStockMovementTrait;
 
 /**
@@ -25,10 +26,10 @@ class InventoryStockMovement extends BaseModel
     /**
      * The belongsTo stock relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function stock()
+    public function stock(): BelongsTo
     {
-        return $this->belongsTo(InventoryStock::class, 'stock_id', 'id');
+        return $this->belongsTo(config('inventory.models.inventory_stock'), 'stock_id', 'id');
     }
 }

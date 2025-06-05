@@ -2,6 +2,7 @@
 
 namespace Stevebauman\Inventory\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Stevebauman\Inventory\Traits\InventoryTransactionHistoryTrait;
 
 /**
@@ -25,10 +26,10 @@ class InventoryTransactionHistory extends BaseModel
     /**
      * The belongsTo transaction relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function transaction()
     {
-        return $this->belongsTo(InventoryTransaction::class, 'transaction_id', 'id');
+        return $this->belongsTo(config('inventory.models.inventory_transaction'), 'transaction_id', 'id');
     }
 }

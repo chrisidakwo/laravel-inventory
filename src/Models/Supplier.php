@@ -2,6 +2,8 @@
 
 namespace Stevebauman\Inventory\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Stevebauman\Inventory\Traits\SupplierTrait;
 
 class Supplier extends BaseModel
@@ -28,14 +30,14 @@ class Supplier extends BaseModel
     /**
      * The belongsToMany items relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
-    public function items()
+    public function items(): BelongsToMany
     {
-        return $this->belongsToMany(Inventory::class, 'inventory_suppliers', 'supplier_id')->withTimestamps();
+        return $this->belongsToMany(config('inventory.models.inventory'), 'inventory_suppliers', 'supplier_id')->withTimestamps();
     }
 
-    public function skus()
+    public function skus(): HasMany
     {
         return $this->hasMany(SupplierSKU::class, 'supplier_id', 'id');
     }

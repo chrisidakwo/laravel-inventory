@@ -2,6 +2,9 @@
 
 namespace Stevebauman\Inventory\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 /**
  * Class CustomAttribute.
  */
@@ -27,11 +30,11 @@ class CustomAttribute extends BaseModel
     /**
 	 * The BelongsToMany customAttributes relationship.
 	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+	 * @return BelongsToMany
 	 */
-    public function inventories()
+    public function inventories(): BelongsToMany
     {
-        return $this->belongsToMany(Inventory::class, 'custom_attribute_values', 'custom_attribute_id', 'inventory_id')
+        return $this->belongsToMany(config('inventory.models.inventory'), 'custom_attribute_values', 'custom_attribute_id', 'inventory_id')
             ->withPivot("string_val", "num_val", "date_val")
             ->as("values")
             // ->using(CustomAttributeValue::class)
@@ -41,9 +44,9 @@ class CustomAttribute extends BaseModel
     /**
      * The belongsToMany customAttributeValues relationship.
      * 
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function customAttributeValues() 
+    public function customAttributeValues(): HasMany
     {
         return $this->hasMany(CustomAttributeValue::class, 'custom_attribute_id');
     }
